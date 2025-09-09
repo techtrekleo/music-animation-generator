@@ -195,7 +195,7 @@ export class MarblePhysics {
       }
 
       // Remove marble if it falls too low
-      if (marble.position.y < -5) {
+      if (marble.position.y < -10) {
         marble.isActive = false;
         this.scene.remove(this.marbleMeshes[i]);
         this.marbleMeshes.splice(i, 1);
@@ -208,6 +208,11 @@ export class MarblePhysics {
 
     // Update key animations
     this.updateKeyAnimations(deltaTime);
+    
+    // Debug: log marble positions
+    if (this.marbles.length > 0) {
+      console.log(`Marble position: ${this.marbles[0].position.x.toFixed(2)}, ${this.marbles[0].position.y.toFixed(2)}, ${this.marbles[0].position.z.toFixed(2)}`);
+    }
   }
 
   private applyAudioInfluence(marble: MarbleState, audioData: { frequencyData: Float32Array; volume: number }): void {

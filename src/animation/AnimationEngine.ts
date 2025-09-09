@@ -408,6 +408,7 @@ export class AnimationEngine {
   }
 
   start(): void {
+    console.log('Starting animation loop...');
     this.lastTime = performance.now();
     const animate = (currentTime: number) => {
       this.animationId = requestAnimationFrame(animate);
@@ -415,17 +416,18 @@ export class AnimationEngine {
       const deltaTime = (currentTime - this.lastTime) / 1000; // Convert to seconds
       this.lastTime = currentTime;
       
-      // Update marble physics
-      if (this.marblePhysics && this.audioData) {
-        this.marblePhysics.update(deltaTime, {
+      // Update marble physics (always update, not just when audio data exists)
+      if (this.marblePhysics) {
+        this.marblePhysics.update(deltaTime, this.audioData ? {
           frequencyData: this.audioData.frequencyData,
           volume: this.audioData.volume
-        });
+        } : undefined);
       }
       
       this.render();
     };
     animate(this.lastTime);
+    console.log('Animation loop started');
   }
 
   stop(): void {
