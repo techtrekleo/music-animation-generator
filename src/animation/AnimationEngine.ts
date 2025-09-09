@@ -56,9 +56,9 @@ export class AnimationEngine {
 
   private setupCamera(): void {
     const aspect = this.config.resolution.width / this.config.resolution.height;
-    this.camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
-    this.camera.position.set(0, 3, 8); // 更靠近場景
-    this.camera.lookAt(0, 0, 0);
+    this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000); // 增加視野角度
+    this.camera.position.set(0, 2, 6); // 更靠近場景，更低的角度
+    this.camera.lookAt(0, -1, 0); // 向下看一點
   }
 
   private setupRenderer(): void {

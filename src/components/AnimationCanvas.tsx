@@ -18,6 +18,30 @@ export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
   xylophoneVolume = 0.5,
   onXylophoneVolumeChange
 }) => {
+  // 偵測螢幕尺寸並調整分辨率
+  const getOptimalResolution = () => {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    
+    console.log(`Screen size: ${screenWidth}x${screenHeight}`);
+    
+    // 根據螢幕大小調整畫布尺寸
+    if (screenWidth < 768) {
+      // 手機
+      return { width: 400, height: 300 };
+    } else if (screenWidth < 1024) {
+      // 平板
+      return { width: 600, height: 400 };
+    } else if (screenWidth < 1440) {
+      // 小螢幕電腦
+      return { width: 800, height: 500 };
+    } else {
+      // 大螢幕
+      return { width: 1000, height: 600 };
+    }
+  };
+
+  const optimalResolution = getOptimalResolution();
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { audioData } = useAudioAnalyzer();
   const {
@@ -35,8 +59,8 @@ export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
 
   // 更新配置
   useEffect(() => {
-    updateConfig({ backgroundColor, resolution });
-  }, [backgroundColor, resolution, updateConfig]);
+    updateConfig({ backgroundColor, resolution: optimalResolution });
+  }, [backgroundColor, optimalResolution, updateConfig]);
 
   // 添加/移除效果
   useEffect(() => {
