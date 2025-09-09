@@ -64,10 +64,10 @@ export class MarblePhysics {
 
     for (let i = 0; i < notes.length; i++) {
       const key: XylophoneKey = {
-        position: new THREE.Vector3(i * 2 - 6, 0, 0),
-        width: 1.5,
-        height: 0.3,
-        depth: 0.8,
+        position: new THREE.Vector3(i * 2.5 - 7.5, 0, 0), // 增加間距
+        width: 2.0, // 增加寬度
+        height: 0.5, // 增加高度
+        depth: 1.2, // 增加深度
         note: notes[i],
         frequency: frequencies[i],
         color: colors[i],
@@ -114,23 +114,23 @@ export class MarblePhysics {
   }
 
   createMarble(startHeight: number = 10): void {
-    const marble: MarbleState = {
-      position: new THREE.Vector3(
-        (Math.random() - 0.5) * 4, // Random X position (wider range)
-        startHeight,
-        0
-      ),
-      velocity: new THREE.Vector3(
-        (Math.random() - 0.5) * 2, // Random horizontal velocity
-        0,
-        0
-      ),
-      acceleration: new THREE.Vector3(0, 0, 0),
-      radius: 0.5, // 增大玻璃珠半徑
-      mass: 1,
-      bounceCount: 0,
-      isActive: true
-    };
+        const marble: MarbleState = {
+          position: new THREE.Vector3(
+            (Math.random() - 0.5) * 8, // 覆蓋整個木琴範圍
+            startHeight,
+            0
+          ),
+          velocity: new THREE.Vector3(
+            (Math.random() - 0.5) * 0.5, // 減少水平速度
+            0,
+            0
+          ),
+          acceleration: new THREE.Vector3(0, 0, 0),
+          radius: 1.0, // 大幅增大玻璃珠半徑
+          mass: 1,
+          bounceCount: 0,
+          isActive: true
+        };
 
     this.marbles.push(marble);
     this.createMarbleMesh(marble);
@@ -390,7 +390,7 @@ export class MarblePhysics {
   // 手動創建玻璃珠用於測試
   createTestMarble(): void {
     console.log('Creating test marble');
-    this.createMarble(10);
+    this.createMarble(5); // 從更低的高度開始，更容易看到
   }
 
   // 設置木琴音量
