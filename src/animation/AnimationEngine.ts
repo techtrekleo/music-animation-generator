@@ -57,8 +57,8 @@ export class AnimationEngine {
   private setupCamera(): void {
     const aspect = this.config.resolution.width / this.config.resolution.height;
     this.camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
-    this.camera.position.set(0, 8, 20);
-    this.camera.lookAt(0, -2, 0);
+    this.camera.position.set(0, 5, 15);
+    this.camera.lookAt(0, 0, 0);
   }
 
   private setupRenderer(): void {

@@ -116,7 +116,7 @@ export class MarblePhysics {
   createMarble(startHeight: number = 10): void {
     const marble: MarbleState = {
       position: new THREE.Vector3(
-        (Math.random() - 0.5) * 2, // Random X position
+        (Math.random() - 0.5) * 4, // Random X position (wider range)
         startHeight,
         0
       ),
@@ -126,7 +126,7 @@ export class MarblePhysics {
         0
       ),
       acceleration: new THREE.Vector3(0, 0, 0),
-      radius: 0.3,
+      radius: 0.5, // 增大玻璃珠半徑
       mass: 1,
       bounceCount: 0,
       isActive: true
@@ -139,11 +139,12 @@ export class MarblePhysics {
   private createMarbleMesh(marble: MarbleState): void {
     const geometry = new THREE.SphereGeometry(marble.radius, 32, 32);
     const material = new THREE.MeshPhongMaterial({
-      color: 0xffffff,
+      color: 0xff6b6b, // 改為紅色，更容易看到
       transparent: false,
       opacity: 1.0,
       shininess: 1000,
-      reflectivity: 1
+      reflectivity: 1,
+      emissive: 0x220000 // 添加發光效果
     });
     
     const mesh = new THREE.Mesh(geometry, material);
@@ -154,7 +155,7 @@ export class MarblePhysics {
     this.scene.add(mesh);
     this.marbleMeshes.push(mesh);
     
-    console.log(`Created marble at position`, marble.position);
+    console.log(`Created RED marble at position`, marble.position);
   }
 
   update(deltaTime: number, audioData?: { frequencyData: Float32Array; volume: number }): void {
@@ -209,8 +210,8 @@ export class MarblePhysics {
     // Update key animations
     this.updateKeyAnimations(deltaTime);
     
-    // Debug: log marble positions
-    if (this.marbles.length > 0) {
+    // Debug: log marble positions (every 60 frames to reduce spam)
+    if (this.marbles.length > 0 && Math.floor(Date.now() / 1000) % 2 === 0) {
       console.log(`Marble position: ${this.marbles[0].position.x.toFixed(2)}, ${this.marbles[0].position.y.toFixed(2)}, ${this.marbles[0].position.z.toFixed(2)}`);
     }
   }

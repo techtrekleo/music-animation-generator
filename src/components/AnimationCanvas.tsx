@@ -82,7 +82,6 @@ export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
 
   // 自動開始動畫
   useEffect(() => {
-    console.log('AnimationCanvas: isInitialized =', isInitialized, 'isPlaying =', isPlaying);
     if (isInitialized && !isPlaying) {
       console.log('Starting animation from AnimationCanvas...');
       start();
