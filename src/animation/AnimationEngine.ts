@@ -3,9 +3,9 @@ import { gsap } from 'gsap';
 import { AudioData, AnimationEffect, AnimationConfig } from '../types';
 
 export class AnimationEngine {
-  private scene: THREE.Scene;
-  private camera: THREE.PerspectiveCamera;
-  private renderer: THREE.WebGLRenderer;
+  private scene!: THREE.Scene;
+  private camera!: THREE.PerspectiveCamera;
+  private renderer!: THREE.WebGLRenderer;
   private canvas: HTMLCanvasElement;
   private animationId: number | null = null;
   private effects: Map<string, THREE.Object3D> = new Map();
@@ -102,14 +102,13 @@ export class AnimationEngine {
     }
   }
 
-  private updateWaveEffect(effect: THREE.Object3D, bassLevel: number, midLevel: number): void {
+  private updateWaveEffect(effect: THREE.Object3D, bassLevel: number, _midLevel: number): void {
     if (effect instanceof THREE.Mesh) {
       const geometry = effect.geometry as THREE.PlaneGeometry;
       const positions = geometry.attributes.position.array as Float32Array;
       
       for (let i = 0; i < positions.length; i += 3) {
         const x = positions[i];
-        const y = positions[i + 1];
         const z = positions[i + 2];
         
         // 根據音頻數據調整頂點位置

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Trash2, Palette, Zap } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { AnimationEffect } from '../types';
 
 interface EffectSelectorProps {

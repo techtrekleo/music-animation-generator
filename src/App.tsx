@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import { useState, useRef } from 'react';
 import { FileUpload } from './components/FileUpload';
 import { AnimationCanvas } from './components/AnimationCanvas';
 import { ControlPanel } from './components/ControlPanel';
@@ -17,7 +17,6 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   
   const {
-    audioData,
     isPlaying,
     isLoading,
     error,

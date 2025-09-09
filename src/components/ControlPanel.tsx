@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Pause, Square, Volume2, Download, Settings } from 'lucide-react';
+import { Play, Pause, Square, Volume2 } from 'lucide-react';
 import { VideoExporter } from '../utils/VideoExporter';
 
 interface ControlPanelProps {

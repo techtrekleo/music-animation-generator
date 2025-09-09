@@ -25,7 +25,6 @@ export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
     removeEffect,
     updateAudioData,
     start,
-    stop,
     resize
   } = useAnimationEngine(canvasRef);
 

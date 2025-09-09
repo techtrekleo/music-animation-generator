@@ -3,7 +3,6 @@ import { AudioData } from '../types';
 export class AudioAnalyzer {
   private audioContext: AudioContext | null = null;
   private analyser: AnalyserNode | null = null;
-  private dataArray: Float32Array | null = null;
   private frequencyData: Float32Array | null = null;
   private timeDomainData: Float32Array | null = null;
   private source: AudioBufferSourceNode | null = null;
@@ -101,8 +100,8 @@ export class AudioAnalyzer {
     const analyze = () => {
       if (!this.isPlaying || !this.analyser) return;
       
-      this.analyser.getFloatFrequencyData(this.frequencyData!);
-      this.analyser.getFloatTimeDomainData(this.timeDomainData!);
+      this.analyser.getFloatFrequencyData(this.frequencyData! as any);
+      this.analyser.getFloatTimeDomainData(this.timeDomainData! as any);
       
       this.animationId = requestAnimationFrame(analyze);
     };

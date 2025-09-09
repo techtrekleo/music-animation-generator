@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { AudioAnalyzer } from '../audio/AudioAnalyzer';
-import { AudioData, MusicFile } from '../types';
+import { AudioData } from '../types';
 
 export const useAudioAnalyzer = () => {
   const [audioData, setAudioData] = useState<AudioData | null>(null);

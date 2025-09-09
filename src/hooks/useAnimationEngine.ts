@@ -39,7 +39,10 @@ export const useAnimationEngine = (canvasRef: React.RefObject<HTMLCanvasElement>
     if (engineRef.current) {
       // 更新背景色
       if (newConfig.backgroundColor) {
-        engineRef.current['scene'].background = new (engineRef.current['scene'].background.constructor as any)(newConfig.backgroundColor);
+        const scene = (engineRef.current as any).scene;
+        if (scene) {
+          scene.background = new (scene.background.constructor as any)(newConfig.backgroundColor);
+        }
       }
       
       // 更新解析度
