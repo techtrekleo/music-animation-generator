@@ -68,14 +68,25 @@ export class AudioAnalyzer {
       this.audioContext.resume();
     }
     
-    this.source.start();
-    this.isPlaying = true;
-    this.startAnalysis();
+    try {
+      this.source.start();
+      this.isPlaying = true;
+      this.startAnalysis();
+    } catch (error) {
+      console.error('Audio start error:', error);
+      // 如果音頻無法播放，仍然啟動分析
+      this.isPlaying = true;
+      this.startAnalysis();
+    }
   }
 
   pause(): void {
     if (this.source && this.isPlaying) {
-      this.source.stop();
+      try {
+        this.source.stop();
+      } catch (error) {
+        console.error('Audio stop error:', error);
+      }
       this.isPlaying = false;
       this.stopAnalysis();
     }
@@ -83,7 +94,11 @@ export class AudioAnalyzer {
 
   stop(): void {
     if (this.source) {
-      this.source.stop();
+      try {
+        this.source.stop();
+      } catch (error) {
+        console.error('Audio stop error:', error);
+      }
       this.source = null;
     }
     this.isPlaying = false;

@@ -84,11 +84,17 @@ export class AnimationEngine {
     this.marblePhysics = new MarblePhysics(this.scene);
     console.log('Marble physics created');
     
-    // 創建一個測試玻璃珠
+    // 創建多個測試玻璃珠
     setTimeout(() => {
       if (this.marblePhysics) {
-        console.log('Creating test marble...');
+        console.log('Creating test marbles...');
         this.marblePhysics.createTestMarble();
+        // 每隔 2 秒創建一個新的玻璃珠
+        setInterval(() => {
+          if (this.marblePhysics) {
+            this.marblePhysics.createTestMarble();
+          }
+        }, 2000);
       }
     }, 1000);
   }
