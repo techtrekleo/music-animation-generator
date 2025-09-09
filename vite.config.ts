@@ -9,7 +9,12 @@ export default defineConfig({
   },
   preview: {
     port: process.env.PORT || 3000,
-    host: true
+    host: true,
+    allowedHosts: [
+      'music-animation-generator-production.up.railway.app',
+      '.railway.app',
+      'localhost'
+    ]
   },
   build: {
     outDir: 'dist',
