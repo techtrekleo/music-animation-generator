@@ -81,12 +81,18 @@ export class MarblePhysics {
   }
 
   private createKeyMesh(key: XylophoneKey): void {
+    // 創建更精緻的琴鍵幾何體
     const geometry = new THREE.BoxGeometry(key.width, key.height, key.depth);
-    const material = new THREE.MeshPhongMaterial({
+    
+    // 創建金屬質感材質
+    const material = new THREE.MeshPhysicalMaterial({
       color: key.color,
-      shininess: 100,
-      transparent: false,
-      opacity: 1.0
+      metalness: 0.8,
+      roughness: 0.2,
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1,
+      envMapIntensity: 1.5,
+      reflectivity: 1.0
     });
     
     const mesh = new THREE.Mesh(geometry, material);
@@ -94,10 +100,33 @@ export class MarblePhysics {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     
+    // 添加琴鍵頂部的發光效果
+    const topGeometry = new THREE.PlaneGeometry(key.width * 0.9, key.depth * 0.9);
+    const topMaterial = new THREE.MeshBasicMaterial({
+      color: key.color,
+      transparent: true,
+      opacity: 0.6,
+      side: THREE.DoubleSide
+    });
+    const topMesh = new THREE.Mesh(topGeometry, topMaterial);
+    topMesh.position.set(0, key.height / 2 + 0.01, 0);
+    topMesh.rotation.x = -Math.PI / 2;
+    mesh.add(topMesh);
+    
+    // 添加邊緣高光
+    const edgeGeometry = new THREE.EdgesGeometry(geometry);
+    const edgeMaterial = new THREE.LineBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0.8
+    });
+    const edgeMesh = new THREE.LineSegments(edgeGeometry, edgeMaterial);
+    mesh.add(edgeMesh);
+    
     this.scene.add(mesh);
     this.keyMeshes.push(mesh);
     
-    console.log(`Created xylophone key: ${key.note} at position`, key.position);
+    console.log(`Created high-quality xylophone key: ${key.note} at position`, key.position);
   }
 
   private setupTrail(): void {
@@ -137,14 +166,21 @@ export class MarblePhysics {
   }
 
   private createMarbleMesh(marble: MarbleState): void {
-    const geometry = new THREE.SphereGeometry(marble.radius, 32, 32);
-    const material = new THREE.MeshPhongMaterial({
-      color: 0xff6b6b, // 改為紅色，更容易看到
-      transparent: false,
-      opacity: 1.0,
-      shininess: 1000,
-      reflectivity: 1,
-      emissive: 0x220000 // 添加發光效果
+    const geometry = new THREE.SphereGeometry(marble.radius, 64, 64); // 增加細節
+    
+    // 創建高品質玻璃材質
+    const material = new THREE.MeshPhysicalMaterial({
+      color: 0xff6b6b,
+      metalness: 0.0,
+      roughness: 0.1,
+      transmission: 0.9, // 透明度
+      thickness: 0.5,
+      ior: 1.5, // 玻璃的折射率
+      clearcoat: 1.0,
+      clearcoatRoughness: 0.1,
+      envMapIntensity: 1.0,
+      transparent: true,
+      opacity: 0.8
     });
     
     const mesh = new THREE.Mesh(geometry, material);
@@ -152,10 +188,21 @@ export class MarblePhysics {
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     
+    // 添加發光邊緣效果
+    const glowGeometry = new THREE.SphereGeometry(marble.radius * 1.1, 32, 32);
+    const glowMaterial = new THREE.MeshBasicMaterial({
+      color: 0xff6b6b,
+      transparent: true,
+      opacity: 0.3,
+      side: THREE.BackSide
+    });
+    const glowMesh = new THREE.Mesh(glowGeometry, glowMaterial);
+    mesh.add(glowMesh);
+    
     this.scene.add(mesh);
     this.marbleMeshes.push(mesh);
     
-    console.log(`Created RED marble at position`, marble.position);
+    console.log(`Created high-quality glass marble at position`, marble.position);
   }
 
   update(deltaTime: number, audioData?: { frequencyData: Float32Array; volume: number }): void {

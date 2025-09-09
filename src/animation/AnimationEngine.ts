@@ -36,22 +36,47 @@ export class AnimationEngine {
   }
 
   private setupScene(): void {
-    // 添加環境光 - 增加亮度
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    // 添加環境光 - 柔和的光照
+    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
     this.scene.add(ambientLight);
 
-    // 添加方向光 - 增加強度
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-    directionalLight.position.set(5, 10, 5);
+    // 主方向光 - 模擬太陽光
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    directionalLight.position.set(10, 15, 10);
     directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
+    directionalLight.shadow.mapSize.width = 4096;
+    directionalLight.shadow.mapSize.height = 4096;
+    directionalLight.shadow.camera.near = 0.1;
+    directionalLight.shadow.camera.far = 50;
+    directionalLight.shadow.camera.left = -20;
+    directionalLight.shadow.camera.right = 20;
+    directionalLight.shadow.camera.top = 20;
+    directionalLight.shadow.camera.bottom = -20;
     this.scene.add(directionalLight);
 
-    // 添加點光源
-    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    pointLight.position.set(0, 5, 5);
-    this.scene.add(pointLight);
+    // 添加多個點光源 - 營造豐富的光照環境
+    const pointLight1 = new THREE.PointLight(0xff6b6b, 0.8, 30);
+    pointLight1.position.set(-5, 8, 5);
+    this.scene.add(pointLight1);
+
+    const pointLight2 = new THREE.PointLight(0x4ecdc4, 0.6, 25);
+    pointLight2.position.set(5, 6, -5);
+    this.scene.add(pointLight2);
+
+    const pointLight3 = new THREE.PointLight(0xffe66d, 0.7, 20);
+    pointLight3.position.set(0, 10, 0);
+    this.scene.add(pointLight3);
+
+    // 添加聚光燈 - 聚焦在木琴區域
+    const spotLight = new THREE.SpotLight(0xffffff, 1.0, 30, Math.PI / 6, 0.3);
+    spotLight.position.set(0, 12, 8);
+    spotLight.target.position.set(0, -1, 0);
+    spotLight.castShadow = true;
+    this.scene.add(spotLight);
+    this.scene.add(spotLight.target);
+
+    // 創建環境貼圖
+    this.createEnvironmentMap();
   }
 
   private setupCamera(): void {
@@ -65,13 +90,32 @@ export class AnimationEngine {
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       antialias: true,
-      alpha: true
+      alpha: false,
+      powerPreference: 'high-performance'
     });
     
     this.renderer.setSize(this.config.resolution.width, this.config.resolution.height);
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // 限制像素比以提升性能
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    this.renderer.outputColorSpace = THREE.SRGBColorSpace;
+    this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    this.renderer.toneMappingExposure = 1.2;
+  }
+
+  private createEnvironmentMap(): void {
+    // 創建一個簡單的環境貼圖
+    const cubeTextureLoader = new THREE.CubeTextureLoader();
+    const envMap = cubeTextureLoader.load([
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', // px
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', // nx
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', // py
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', // ny
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', // pz
+      'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='  // nz
+    ]);
+    
+    this.scene.environment = envMap;
   }
 
   private setupLighting(): void {
