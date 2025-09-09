@@ -9,6 +9,14 @@ interface EffectSelectorProps {
 
 const defaultEffects: Omit<AnimationEffect, 'id'>[] = [
   {
+    name: '玻璃珠木琴',
+    type: 'marble',
+    intensity: 0.8,
+    color: '#ffffff',
+    speed: 1.0,
+    size: 1.0
+  },
+  {
     name: '波浪效果',
     type: 'wave',
     intensity: 0.8,
@@ -78,6 +86,7 @@ export const EffectSelector: React.FC<EffectSelectorProps> = ({
 
   const getEffectIcon = (type: AnimationEffect['type']) => {
     switch (type) {
+      case 'marble': return '🔮';
       case 'wave': return '🌊';
       case 'particle': return '✨';
       case 'geometric': return '🔷';

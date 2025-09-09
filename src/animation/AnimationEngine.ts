@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { gsap } from 'gsap';
 import { AudioData, AnimationEffect, AnimationConfig } from '../types';
+import { MarblePhysics } from './MarblePhysics';
 
 export class AnimationEngine {
   private scene!: THREE.Scene;
@@ -11,6 +12,8 @@ export class AnimationEngine {
   private effects: Map<string, THREE.Object3D> = new Map();
   private audioData: AudioData | null = null;
   private config: AnimationConfig;
+  private marblePhysics: MarblePhysics | null = null;
+  private lastTime: number = 0;
 
   constructor(canvas: HTMLCanvasElement, config: AnimationConfig) {
     this.canvas = canvas;
@@ -21,6 +24,7 @@ export class AnimationEngine {
     this.setupCamera();
     this.setupRenderer();
     this.setupLighting();
+    this.setupMarblePhysics();
   }
 
   private initThreeJS(): void {
@@ -65,9 +69,21 @@ export class AnimationEngine {
     this.scene.add(pointLight);
   }
 
+  private setupMarblePhysics(): void {
+    this.marblePhysics = new MarblePhysics(this.scene);
+  }
+
   updateAudioData(audioData: AudioData): void {
     this.audioData = audioData;
     this.updateEffects();
+    
+    // Update marble physics with audio data
+    if (this.marblePhysics) {
+      this.marblePhysics.spawnMarbleFromAudio({
+        volume: audioData.volume,
+        bassLevel: audioData.bassLevel
+      });
+    }
   }
 
   private updateEffects(): void {
@@ -204,6 +220,9 @@ export class AnimationEngine {
     let threeEffect: THREE.Object3D;
 
     switch (effect.type) {
+      case 'marble':
+        // 玻璃珠效果不需要創建額外的3D對象，因為它由MarblePhysics管理
+        return;
       case 'wave':
         threeEffect = this.createWaveEffect(effect);
         break;
@@ -353,14 +372,33 @@ export class AnimationEngine {
       this.scene.remove(effect);
       this.effects.delete(id);
     }
+    
+    // 如果是玻璃珠效果，清除所有玻璃珠
+    const effectConfig = this.config.effects.find(e => e.id === id);
+    if (effectConfig?.type === 'marble' && this.marblePhysics) {
+      this.marblePhysics.clearMarbles();
+    }
   }
 
   start(): void {
-    const animate = () => {
+    this.lastTime = performance.now();
+    const animate = (currentTime: number) => {
       this.animationId = requestAnimationFrame(animate);
+      
+      const deltaTime = (currentTime - this.lastTime) / 1000; // Convert to seconds
+      this.lastTime = currentTime;
+      
+      // Update marble physics
+      if (this.marblePhysics && this.audioData) {
+        this.marblePhysics.update(deltaTime, {
+          frequencyData: this.audioData.frequencyData,
+          volume: this.audioData.volume
+        });
+      }
+      
       this.render();
     };
-    animate();
+    animate(this.lastTime);
   }
 
   stop(): void {
@@ -386,6 +424,10 @@ export class AnimationEngine {
 
   dispose(): void {
     this.stop();
+    
+    if (this.marblePhysics) {
+      this.marblePhysics.dispose();
+    }
     
     this.effects.forEach(effect => {
       this.scene.remove(effect);

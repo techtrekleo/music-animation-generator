@@ -13,7 +13,7 @@ export interface AudioData {
 export interface AnimationEffect {
   id: string;
   name: string;
-  type: 'wave' | 'particle' | 'geometric' | 'fluid' | 'neural';
+  type: 'marble' | 'wave' | 'particle' | 'geometric' | 'fluid' | 'neural';
   intensity: number;
   color: string;
   speed: number;
