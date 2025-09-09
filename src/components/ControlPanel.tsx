@@ -12,6 +12,8 @@ interface ControlPanelProps {
   onStop: () => void;
   onVolumeChange: (volume: number) => void;
   canvasRef: React.RefObject<HTMLCanvasElement>;
+  xylophoneVolume?: number;
+  onXylophoneVolumeChange?: (volume: number) => void;
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
@@ -23,7 +25,9 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onPause,
   onStop,
   onVolumeChange,
-  canvasRef
+  canvasRef,
+  xylophoneVolume = 0.5,
+  onXylophoneVolumeChange
 }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [videoExporter] = useState(() => 
@@ -119,20 +123,42 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       </div>
 
       {/* 音量控制 */}
-      <div className="flex items-center space-x-3">
-        <Volume2 className="h-5 w-5 text-gray-600" />
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          value={volume}
-          onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
-          className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-        />
-        <span className="text-sm text-gray-600 w-12">
-          {Math.round(volume * 100)}%
-        </span>
+      <div className="space-y-3">
+        <div className="flex items-center space-x-3">
+          <Volume2 className="h-5 w-5 text-gray-600" />
+          <span className="text-sm text-gray-600 w-16">音樂音量</span>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={volume}
+            onChange={(e) => onVolumeChange(parseFloat(e.target.value))}
+            className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+          />
+          <span className="text-sm text-gray-600 w-12">
+            {Math.round(volume * 100)}%
+          </span>
+        </div>
+        
+        {onXylophoneVolumeChange && (
+          <div className="flex items-center space-x-3">
+            <div className="h-5 w-5 text-gray-600">🎵</div>
+            <span className="text-sm text-gray-600 w-16">木琴音量</span>
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={xylophoneVolume}
+              onChange={(e) => onXylophoneVolumeChange(parseFloat(e.target.value))}
+              className="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            />
+            <span className="text-sm text-gray-600 w-12">
+              {Math.round(xylophoneVolume * 100)}%
+            </span>
+          </div>
+        )}
       </div>
 
       {/* 錄製狀態 */}

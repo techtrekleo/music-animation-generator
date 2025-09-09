@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { XylophoneSynth } from '../audio/XylophoneSynth';
 
 export interface MarbleState {
   position: THREE.Vector3;
@@ -35,12 +36,14 @@ export class MarblePhysics {
   private trailGeometry!: THREE.BufferGeometry;
   private trailMaterial!: THREE.LineBasicMaterial;
   private trailLine!: THREE.Line;
+  private xylophoneSynth: XylophoneSynth;
 
   constructor(scene: THREE.Scene) {
     this.scene = scene;
     this.gravity = new THREE.Vector3(0, -9.8, 0);
     this.friction = 0.98;
     this.bounceDamping = 0.7;
+    this.xylophoneSynth = new XylophoneSynth();
     
     this.setupXylophoneKeys();
     this.setupTrail();
@@ -61,7 +64,7 @@ export class MarblePhysics {
 
     for (let i = 0; i < notes.length; i++) {
       const key: XylophoneKey = {
-        position: new THREE.Vector3(i * 2 - 6, 0, 0),
+        position: new THREE.Vector3(i * 2 - 6, -2, 0),
         width: 1.5,
         height: 0.2,
         depth: 0.5,
@@ -309,8 +312,12 @@ export class MarblePhysics {
   }
 
   private playNote(frequency: number): void {
-    // This would integrate with Web Audio API to play the note
-    console.log(`Playing note: ${frequency}Hz`);
+    // 計算撞擊強度（基於玻璃珠的速度）
+    const velocity = Math.min(1.0, Math.abs(this.marbles[this.marbles.length - 1]?.velocity.y || 0) / 10);
+    
+    // 播放木琴音符
+    this.xylophoneSynth.playNote(frequency, velocity);
+    console.log(`Playing xylophone note: ${frequency}Hz at velocity ${velocity}`);
   }
 
   private updateTrail(): void {
@@ -354,7 +361,9 @@ export class MarblePhysics {
 
   // Public methods for external control
   spawnMarbleFromAudio(audioData: { volume: number; bassLevel: number }): void {
-    if (audioData.volume > 0.3 && audioData.bassLevel > 0.2) {
+    console.log('Audio data:', audioData);
+    if (audioData.volume > 0.1 && audioData.bassLevel > 0.1) {
+      console.log('Creating marble!');
       this.createMarble(8 + audioData.bassLevel * 5);
     }
   }
@@ -368,9 +377,21 @@ export class MarblePhysics {
     this.trailPoints = [];
   }
 
+  // 手動創建玻璃珠用於測試
+  createTestMarble(): void {
+    console.log('Creating test marble');
+    this.createMarble(10);
+  }
+
+  // 設置木琴音量
+  setXylophoneVolume(volume: number): void {
+    this.xylophoneSynth.setVolume(volume);
+  }
+
   dispose(): void {
     this.clearMarbles();
     this.keyMeshes.forEach(mesh => this.scene.remove(mesh));
     this.scene.remove(this.trailLine);
+    this.xylophoneSynth.dispose();
   }
 }

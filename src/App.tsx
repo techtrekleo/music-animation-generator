@@ -12,6 +12,7 @@ function App() {
   const [effects, setEffects] = useState<AnimationEffect[]>([]);
   const [backgroundColor, setBackgroundColor] = useState('#000000');
   const [volume, setVolume] = useState(0.8);
+  const [xylophoneVolume, setXylophoneVolume] = useState(0.5);
   const [isGenerating, setIsGenerating] = useState(false);
   
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -151,6 +152,8 @@ function App() {
                   effects={effects}
                   backgroundColor={backgroundColor}
                   resolution={{ width: 1920, height: 1080 }}
+                  xylophoneVolume={xylophoneVolume}
+                  onXylophoneVolumeChange={setXylophoneVolume}
                 />
               </div>
 
@@ -167,6 +170,8 @@ function App() {
                     onStop={handleStop}
                     onVolumeChange={handleVolumeChange}
                     canvasRef={canvasRef}
+                    xylophoneVolume={xylophoneVolume}
+                    onXylophoneVolumeChange={setXylophoneVolume}
                   />
                 </div>
               )}

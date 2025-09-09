@@ -71,6 +71,11 @@ export const useAnimationEngine = (canvasRef: React.RefObject<HTMLCanvasElement>
     engineRef.current.updateAudioData(audioData);
   };
 
+  const setXylophoneVolume = (volume: number): void => {
+    if (!engineRef.current) return;
+    engineRef.current.setXylophoneVolume(volume);
+  };
+
   const start = (): void => {
     if (!engineRef.current) return;
     
@@ -98,6 +103,7 @@ export const useAnimationEngine = (canvasRef: React.RefObject<HTMLCanvasElement>
     addEffect,
     removeEffect,
     updateAudioData,
+    setXylophoneVolume,
     start,
     stop,
     resize

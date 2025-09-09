@@ -7,12 +7,16 @@ interface AnimationCanvasProps {
   effects: AnimationEffect[];
   backgroundColor?: string;
   resolution?: { width: number; height: number };
+  xylophoneVolume?: number;
+  onXylophoneVolumeChange?: (volume: number) => void;
 }
 
 export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
   effects,
   backgroundColor = '#000000',
-  resolution = { width: 1920, height: 1080 }
+  resolution = { width: 1920, height: 1080 },
+  xylophoneVolume = 0.5,
+  onXylophoneVolumeChange
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const { audioData } = useAudioAnalyzer();
@@ -24,6 +28,7 @@ export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
     addEffect,
     removeEffect,
     updateAudioData,
+    setXylophoneVolume,
     start,
     resize
   } = useAnimationEngine(canvasRef);
@@ -52,6 +57,11 @@ export const AnimationCanvas: React.FC<AnimationCanvasProps> = ({
       updateAudioData(audioData);
     }
   }, [audioData, updateAudioData]);
+
+  // 更新木琴音量
+  useEffect(() => {
+    setXylophoneVolume(xylophoneVolume);
+  }, [xylophoneVolume, setXylophoneVolume]);
 
   // 處理視窗大小變化
   useEffect(() => {

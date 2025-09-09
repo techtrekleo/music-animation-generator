@@ -14,6 +14,7 @@ export class AnimationEngine {
   private config: AnimationConfig;
   private marblePhysics: MarblePhysics | null = null;
   private lastTime: number = 0;
+  private xylophoneVolume: number = 0.5;
 
   constructor(canvas: HTMLCanvasElement, config: AnimationConfig) {
     this.canvas = canvas;
@@ -46,7 +47,8 @@ export class AnimationEngine {
   private setupCamera(): void {
     const aspect = this.config.resolution.width / this.config.resolution.height;
     this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-    this.camera.position.z = 5;
+    this.camera.position.set(0, 5, 15);
+    this.camera.lookAt(0, 0, 0);
   }
 
   private setupRenderer(): void {
@@ -71,6 +73,20 @@ export class AnimationEngine {
 
   private setupMarblePhysics(): void {
     this.marblePhysics = new MarblePhysics(this.scene);
+    
+    // 創建一個測試玻璃珠
+    setTimeout(() => {
+      if (this.marblePhysics) {
+        this.marblePhysics.createTestMarble();
+      }
+    }, 1000);
+  }
+
+  setXylophoneVolume(volume: number): void {
+    this.xylophoneVolume = volume;
+    if (this.marblePhysics) {
+      this.marblePhysics.setXylophoneVolume(volume);
+    }
   }
 
   updateAudioData(audioData: AudioData): void {
