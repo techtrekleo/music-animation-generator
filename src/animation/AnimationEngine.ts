@@ -17,6 +17,7 @@ export class AnimationEngine {
   private xylophoneVolume: number = 0.5;
 
   constructor(canvas: HTMLCanvasElement, config: AnimationConfig) {
+    console.log('Initializing AnimationEngine...');
     this.canvas = canvas;
     this.config = config;
     
@@ -26,6 +27,7 @@ export class AnimationEngine {
     this.setupRenderer();
     this.setupLighting();
     this.setupMarblePhysics();
+    console.log('AnimationEngine initialized');
   }
 
   private initThreeJS(): void {
@@ -34,21 +36,29 @@ export class AnimationEngine {
   }
 
   private setupScene(): void {
-    // 添加環境光
-    const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+    // 添加環境光 - 增加亮度
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
-    // 添加方向光
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-    directionalLight.position.set(1, 1, 1);
+    // 添加方向光 - 增加強度
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
+    directionalLight.position.set(5, 10, 5);
+    directionalLight.castShadow = true;
+    directionalLight.shadow.mapSize.width = 2048;
+    directionalLight.shadow.mapSize.height = 2048;
     this.scene.add(directionalLight);
+
+    // 添加點光源
+    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
+    pointLight.position.set(0, 5, 5);
+    this.scene.add(pointLight);
   }
 
   private setupCamera(): void {
     const aspect = this.config.resolution.width / this.config.resolution.height;
-    this.camera = new THREE.PerspectiveCamera(75, aspect, 0.1, 1000);
-    this.camera.position.set(0, 5, 15);
-    this.camera.lookAt(0, 0, 0);
+    this.camera = new THREE.PerspectiveCamera(60, aspect, 0.1, 1000);
+    this.camera.position.set(0, 8, 20);
+    this.camera.lookAt(0, -2, 0);
   }
 
   private setupRenderer(): void {
@@ -65,18 +75,19 @@ export class AnimationEngine {
   }
 
   private setupLighting(): void {
-    // 添加點光源用於動態效果
-    const pointLight = new THREE.PointLight(0xffffff, 1, 100);
-    pointLight.position.set(0, 0, 10);
-    this.scene.add(pointLight);
+    // 這個方法現在在 setupScene 中處理
+    // 保留這個方法以防其他地方需要額外光照
   }
 
   private setupMarblePhysics(): void {
+    console.log('Setting up marble physics...');
     this.marblePhysics = new MarblePhysics(this.scene);
+    console.log('Marble physics created');
     
     // 創建一個測試玻璃珠
     setTimeout(() => {
       if (this.marblePhysics) {
+        console.log('Creating test marble...');
         this.marblePhysics.createTestMarble();
       }
     }, 1000);

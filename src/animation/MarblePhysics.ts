@@ -64,10 +64,10 @@ export class MarblePhysics {
 
     for (let i = 0; i < notes.length; i++) {
       const key: XylophoneKey = {
-        position: new THREE.Vector3(i * 2 - 6, -2, 0),
+        position: new THREE.Vector3(i * 2 - 6, 0, 0),
         width: 1.5,
-        height: 0.2,
-        depth: 0.5,
+        height: 0.3,
+        depth: 0.8,
         note: notes[i],
         frequency: frequencies[i],
         color: colors[i],
@@ -85,8 +85,8 @@ export class MarblePhysics {
     const material = new THREE.MeshPhongMaterial({
       color: key.color,
       shininess: 100,
-      transparent: true,
-      opacity: 0.9
+      transparent: false,
+      opacity: 1.0
     });
     
     const mesh = new THREE.Mesh(geometry, material);
@@ -96,6 +96,8 @@ export class MarblePhysics {
     
     this.scene.add(mesh);
     this.keyMeshes.push(mesh);
+    
+    console.log(`Created xylophone key: ${key.note} at position`, key.position);
   }
 
   private setupTrail(): void {
@@ -138,8 +140,8 @@ export class MarblePhysics {
     const geometry = new THREE.SphereGeometry(marble.radius, 32, 32);
     const material = new THREE.MeshPhongMaterial({
       color: 0xffffff,
-      transparent: true,
-      opacity: 0.8,
+      transparent: false,
+      opacity: 1.0,
       shininess: 1000,
       reflectivity: 1
     });
@@ -151,6 +153,8 @@ export class MarblePhysics {
     
     this.scene.add(mesh);
     this.marbleMeshes.push(mesh);
+    
+    console.log(`Created marble at position`, marble.position);
   }
 
   update(deltaTime: number, audioData?: { frequencyData: Float32Array; volume: number }): void {
