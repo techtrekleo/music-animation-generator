@@ -11,7 +11,7 @@ export const useAnimationEngine = (canvasRef: React.RefObject<HTMLCanvasElement>
   const configRef = useRef<AnimationConfig>({
     effects: [],
     backgroundColor: '#000000',
-    resolution: { width: 1920, height: 1080 },
+    resolution: { width: 800, height: 400 },
     fps: 60,
     duration: 0
   });

@@ -147,11 +147,11 @@ function App() {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">動畫預覽</h2>
               
-              <div className="aspect-video bg-gray-100 rounded-lg overflow-hidden">
+              <div className="h-96 bg-gray-100 rounded-lg overflow-hidden">
                 <AnimationCanvas
                   effects={effects}
                   backgroundColor={backgroundColor}
-                  resolution={{ width: 1920, height: 1080 }}
+                  resolution={{ width: 800, height: 400 }}
                   xylophoneVolume={xylophoneVolume}
                   onXylophoneVolumeChange={setXylophoneVolume}
                 />
